@@ -57,11 +57,13 @@ class Matrix {
             });
         }
 
-        void print_row(vector<int>& row) {
-            for(int x : row) {
-                cout << x << " ";
+        void print() {
+            for(auto row : mat) {
+                for(int x : row) {
+                    cout << setw(4) << x << " ";
+                }
+                cout << "\n";
             }
-            cout << "\n\n";
         }
 
         int leading_entry(vector<int>& row) {
@@ -78,6 +80,17 @@ class Matrix {
             });
         }
 
+        void transpose() {
+            vector<vector<int> > transposed_mat(m, vector<int> (n));
+            for(int i = 0; i < n; i++) {
+                for(int j = 0; j < m; j++) {
+                    transposed_mat[j][i] = mat[i][j];
+                }
+            }
+            swap(n, m);
+            mat = transposed_mat;
+        }
+
         void rref() {
             auto rrefmat = mat;
 
@@ -86,7 +99,7 @@ class Matrix {
                 reduce_row(rrefmat[i]);
             }
 
-            for(int i = 0; i < m - 1; i++) {
+            for(int i = 0; i < m; i++) {
                 // for each col.
 
                 bool willprocess = false;
@@ -111,8 +124,16 @@ class Matrix {
                     continue;
                 }
 
+                for(auto row : rrefmat) {
+                    for(int x : row) {
+                        cout << setw(4) << x << " ";
+                    }
+                    cout << "\n";
+                }
+                cout << "\n\n";
+
                 for(int j = 1; j < n; j++) {
-                    if(rrefmat[j][i] == 0) break;
+                    if(rrefmat[j][i] == 0) continue;
 
                     int lcm = rrefmat[j][i] * rrefmat[0][i] / gcd(rrefmat[j][i], rrefmat[0][i]);
                     int multiple1 = lcm / rrefmat[0][i], multiple2 = lcm / rrefmat[j][i];
@@ -131,11 +152,11 @@ class Matrix {
                 int entry = rrefmat[i][lead_ind];
                 for(int j = 0; j < m; j++) {
                     if(rrefmat[i][j] % entry == 0) {
-                        cout << setw(5) << rrefmat[i][j] / entry << " ";
+                        cout << setw(6) << rrefmat[i][j] / entry << " ";
                     } else {
                         int g = gcd(rrefmat[i][j], entry);
                         rrefmat[i][j] /= g;
-                        cout << setw(5) << rrefmat[i][j] << "/" << entry / g << " ";
+                        cout << setw(6) << rrefmat[i][j] << "/" << entry / g << " ";
                     }
                 }
                 cout << "\n";
@@ -145,9 +166,33 @@ class Matrix {
 
 int main() {
     Matrix mat;
+    string instructions = "1. Enter the matrix\n2. Row reduced echelon\n3. Transpose\n4. Print Matrix\n5. Exit\n\n";
     while(true) {
-        mat.read();
-        mat.rref();
+        cout << instructions;
+        int operation;
+        cin >> operation;
+        switch (operation)
+        {
+        case 1:
+            mat.read();
+            break;
+        case 2:
+            mat.rref();
+            break;
+
+        case 3: 
+            mat.transpose();
+            break;
+
+        case 4: 
+            mat.print();
+            break;
+        case 5: 
+            return 0;
+        default:
+            cout << "No operation\n";
+            break;
+        }
     }
 
 
