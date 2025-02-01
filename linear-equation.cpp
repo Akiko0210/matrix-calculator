@@ -11,7 +11,6 @@ class Matrix {
     private: 
         int n, m;
         vector<vector<int> > mat;
-        bool is_augmented;
     public: 
         Matrix() {
             
@@ -28,7 +27,6 @@ class Matrix {
                     cin >> mat[i][j];
                 }
             }
-            // cout << "Is this augmented\n"
         }
 
         void multiply_row(vector<int>& row, int x) {
