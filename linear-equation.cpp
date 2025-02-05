@@ -16,6 +16,12 @@ class Matrix {
             
         }
 
+        Matrix(vector<vector<int> >& a) {
+            mat = a;
+            n = a.size();
+            m = a[0].size();
+        }
+
         void read() {
             cout << "Enter dimensions (n, m): ";
             cin >> n >> m;
@@ -160,11 +166,39 @@ class Matrix {
                 cout << "\n";
             }
         }
+
+        int determinant() {
+            if(n != m) {
+                cout << "Can't calculate sorry\n";
+                return -1;
+            }
+
+            if(n == 2) {
+                return mat[0][0] * mat[1][1] - mat[1][0] * mat[0][1];
+            }
+
+            int D = 0;
+            for(int i = 0; i < n; i++) {
+                // a[0][i]
+                vector<vector<int> > A_0i;
+                for(int j = 1; j < n; j++) {
+                    vector<int> row;
+                    for(int k = 0; k < n; k++) {
+                        if(k == i) continue;
+                        row.push_back(mat[j][k]);
+                    }
+                    A_0i.push_back(row);
+                }
+                Matrix mat_sub(A_0i);
+                D += mat[0][i] * (i & 1 ? -1 : 1) * mat_sub.determinant();
+            }
+            return D;
+        }
 };
 
 int main() {
     Matrix mat;
-    string instructions = "1. Enter the matrix\n2. Row reduced echelon\n3. Transpose\n4. Print Matrix\n5. Exit\n\n";
+    string instructions = "1. Enter the matrix\n2. Row reduced echelon\n3. Transpose\n4. Print Matrix\n5. Determinant\n0. Exit\n";
     while(true) {
         cout << instructions;
         int operation;
@@ -186,6 +220,9 @@ int main() {
             mat.print();
             break;
         case 5: 
+            cout << "D = " <<  mat.determinant() << "\n";
+            break;
+        case 0: 
             return 0;
         default:
             cout << "No operation\n";
